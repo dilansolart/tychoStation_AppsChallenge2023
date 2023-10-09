@@ -1,0 +1,265 @@
+%General Mission Analysis Tool(GMAT) Script
+%Created: 2023-10-08 10:04:44
+
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft SatTycho;
+GMAT SatTycho.DateFormat = UTCGregorian;
+GMAT SatTycho.Epoch = '20 Jan 2023 11:59:28.000';
+GMAT SatTycho.CoordinateSystem = EarthMJ2000Eq;
+GMAT SatTycho.DisplayStateType = Keplerian;
+GMAT SatTycho.SMA = 8474.318075105844;
+GMAT SatTycho.ECC = 2.957773281533187e-16;
+GMAT SatTycho.INC = 12.4606;
+GMAT SatTycho.RAAN = 112.8362;
+GMAT SatTycho.AOP = 0;
+GMAT SatTycho.TA = 38.98049879258169;
+GMAT SatTycho.DryMass = 1000;
+GMAT SatTycho.Cd = 2.2;
+GMAT SatTycho.Cr = 1.8;
+GMAT SatTycho.DragArea = 15;
+GMAT SatTycho.SRPArea = 1;
+GMAT SatTycho.SPADDragScaleFactor = 1;
+GMAT SatTycho.SPADSRPScaleFactor = 1;
+GMAT SatTycho.AtmosDensityScaleFactor = 1;
+GMAT SatTycho.ExtendedMassPropertiesModel = 'None';
+GMAT SatTycho.Tanks = {ChemicalTank1};
+GMAT SatTycho.NAIFId = -10000001;
+GMAT SatTycho.NAIFIdReferenceFrame = -9000001;
+GMAT SatTycho.OrbitColor = Red;
+GMAT SatTycho.TargetColor = Teal;
+GMAT SatTycho.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+GMAT SatTycho.CdSigma = 1e+70;
+GMAT SatTycho.CrSigma = 1e+70;
+GMAT SatTycho.Id = 'SatId';
+GMAT SatTycho.Attitude = CoordinateSystemFixed;
+GMAT SatTycho.SPADSRPInterpolationMethod = Bilinear;
+GMAT SatTycho.SPADSRPScaleFactorSigma = 1e+70;
+GMAT SatTycho.SPADDragInterpolationMethod = Bilinear;
+GMAT SatTycho.SPADDragScaleFactorSigma = 1e+70;
+GMAT SatTycho.AtmosDensityScaleFactorSigma = 1e+70;
+GMAT SatTycho.ModelFile = 'aura.3ds';
+GMAT SatTycho.ModelOffsetX = 0;
+GMAT SatTycho.ModelOffsetY = 0;
+GMAT SatTycho.ModelOffsetZ = 0;
+GMAT SatTycho.ModelRotationX = 0;
+GMAT SatTycho.ModelRotationY = 0;
+GMAT SatTycho.ModelRotationZ = 0;
+GMAT SatTycho.ModelScale = 1;
+GMAT SatTycho.AttitudeDisplayStateType = 'Quaternion';
+GMAT SatTycho.AttitudeRateDisplayStateType = 'AngularVelocity';
+GMAT SatTycho.AttitudeCoordinateSystem = EarthMJ2000Eq;
+GMAT SatTycho.EulerAngleSequence = '321';
+
+%----------------------------------------
+%---------- Hardware Components
+%----------------------------------------
+
+Create ChemicalTank ChemicalTank1;
+GMAT ChemicalTank1.AllowNegativeFuelMass = false;
+GMAT ChemicalTank1.FuelMass = 3000;
+GMAT ChemicalTank1.Pressure = 1500;
+GMAT ChemicalTank1.Temperature = 20;
+GMAT ChemicalTank1.RefTemperature = 20;
+GMAT ChemicalTank1.Volume = 300;
+GMAT ChemicalTank1.FuelDensity = 1260;
+GMAT ChemicalTank1.PressureModel = PressureRegulated;
+
+
+
+%----------------------------------------
+%---------- ForceModels
+%----------------------------------------
+
+Create ForceModel PropEarth_ForceModel;
+GMAT PropEarth_ForceModel.CentralBody = Earth;
+GMAT PropEarth_ForceModel.PrimaryBodies = {Earth};
+GMAT PropEarth_ForceModel.PointMasses = {Luna, Sun};
+GMAT PropEarth_ForceModel.SRP = On;
+GMAT PropEarth_ForceModel.RelativisticCorrection = Off;
+GMAT PropEarth_ForceModel.ErrorControl = RSSStep;
+GMAT PropEarth_ForceModel.GravityField.Earth.Degree = 10;
+GMAT PropEarth_ForceModel.GravityField.Earth.Order = 10;
+GMAT PropEarth_ForceModel.GravityField.Earth.StmLimit = 100;
+GMAT PropEarth_ForceModel.GravityField.Earth.PotentialFile = 'JGM2.cof';
+GMAT PropEarth_ForceModel.GravityField.Earth.TideModel = 'None';
+GMAT PropEarth_ForceModel.SRP.Flux = 1367;
+GMAT PropEarth_ForceModel.SRP.SRPModel = Spherical;
+GMAT PropEarth_ForceModel.SRP.Nominal_Sun = 149597870.691;
+GMAT PropEarth_ForceModel.Drag.AtmosphereModel = JacchiaRoberts;
+GMAT PropEarth_ForceModel.Drag.HistoricWeatherSource = 'ConstantFluxAndGeoMag';
+GMAT PropEarth_ForceModel.Drag.PredictedWeatherSource = 'ConstantFluxAndGeoMag';
+GMAT PropEarth_ForceModel.Drag.CSSISpaceWeatherFile = 'SpaceWeather-All-v1.2.txt';
+GMAT PropEarth_ForceModel.Drag.SchattenFile = 'SchattenPredict.txt';
+GMAT PropEarth_ForceModel.Drag.F107 = 150;
+GMAT PropEarth_ForceModel.Drag.F107A = 150;
+GMAT PropEarth_ForceModel.Drag.MagneticIndex = 3;
+GMAT PropEarth_ForceModel.Drag.SchattenErrorModel = 'Nominal';
+GMAT PropEarth_ForceModel.Drag.SchattenTimingModel = 'NominalCycle';
+GMAT PropEarth_ForceModel.Drag.DragModel = 'Spherical';
+
+Create ForceModel PropLuna_ForceModel;
+GMAT PropLuna_ForceModel.CentralBody = Luna;
+GMAT PropLuna_ForceModel.PrimaryBodies = {Luna};
+GMAT PropLuna_ForceModel.PointMasses = {Earth, Sun};
+GMAT PropLuna_ForceModel.Drag = None;
+GMAT PropLuna_ForceModel.SRP = On;
+GMAT PropLuna_ForceModel.RelativisticCorrection = Off;
+GMAT PropLuna_ForceModel.ErrorControl = RSSStep;
+GMAT PropLuna_ForceModel.GravityField.Luna.Degree = 2;
+GMAT PropLuna_ForceModel.GravityField.Luna.Order = 2;
+GMAT PropLuna_ForceModel.GravityField.Luna.StmLimit = 100;
+GMAT PropLuna_ForceModel.GravityField.Luna.PotentialFile = 'LP165P.cof';
+GMAT PropLuna_ForceModel.GravityField.Luna.TideModel = 'None';
+GMAT PropLuna_ForceModel.SRP.Flux = 1367;
+GMAT PropLuna_ForceModel.SRP.SRPModel = Spherical;
+GMAT PropLuna_ForceModel.SRP.Nominal_Sun = 149597870.691;
+
+%----------------------------------------
+%---------- Propagators
+%----------------------------------------
+
+Create Propagator PropEarth;
+GMAT PropEarth.FM = PropEarth_ForceModel;
+GMAT PropEarth.Type = RungeKutta89;
+GMAT PropEarth.InitialStepSize = 60;
+GMAT PropEarth.Accuracy = 9.999999999999999e-12;
+GMAT PropEarth.MinStep = 0.001;
+GMAT PropEarth.MaxStep = 2700;
+GMAT PropEarth.MaxStepAttempts = 50;
+GMAT PropEarth.StopIfAccuracyIsViolated = true;
+
+Create Propagator PropLuna;
+GMAT PropLuna.FM = PropLuna_ForceModel;
+GMAT PropLuna.Type = RungeKutta89;
+GMAT PropLuna.InitialStepSize = 60;
+GMAT PropLuna.Accuracy = 9.999999999999999e-12;
+GMAT PropLuna.MinStep = 0.001;
+GMAT PropLuna.MaxStep = 2700;
+GMAT PropLuna.MaxStepAttempts = 50;
+GMAT PropLuna.StopIfAccuracyIsViolated = true;
+
+%----------------------------------------
+%---------- Burns
+%----------------------------------------
+
+Create ImpulsiveBurn DefaultIB;
+GMAT DefaultIB.CoordinateSystem = Local;
+GMAT DefaultIB.Origin = Earth;
+GMAT DefaultIB.Axes = VNB;
+GMAT DefaultIB.Element1 = 0;
+GMAT DefaultIB.Element2 = 0;
+GMAT DefaultIB.Element3 = 0;
+GMAT DefaultIB.DecrementMass = false;
+GMAT DefaultIB.Isp = 300;
+GMAT DefaultIB.GravitationalAccel = 9.81;
+
+Create ImpulsiveBurn SalirOrbita;
+GMAT SalirOrbita.CoordinateSystem = Local;
+GMAT SalirOrbita.Origin = Earth;
+GMAT SalirOrbita.Axes = VNB;
+GMAT SalirOrbita.Element1 = 0;
+GMAT SalirOrbita.Element2 = 0;
+GMAT SalirOrbita.Element3 = 0;
+GMAT SalirOrbita.DecrementMass = true;
+GMAT SalirOrbita.Tank = {ChemicalTank1};
+GMAT SalirOrbita.Isp = 300;
+GMAT SalirOrbita.GravitationalAccel = 9.81;
+
+Create ImpulsiveBurn EntrarOrbita;
+GMAT EntrarOrbita.CoordinateSystem = Local;
+GMAT EntrarOrbita.Origin = Earth;
+GMAT EntrarOrbita.Axes = VNB;
+GMAT EntrarOrbita.Element1 = 0;
+GMAT EntrarOrbita.Element2 = 0;
+GMAT EntrarOrbita.Element3 = 0;
+GMAT EntrarOrbita.DecrementMass = true;
+GMAT EntrarOrbita.Tank = {ChemicalTank1};
+GMAT EntrarOrbita.Isp = 300;
+GMAT EntrarOrbita.GravitationalAccel = 9.81;
+
+%----------------------------------------
+%---------- Solvers
+%----------------------------------------
+
+Create DifferentialCorrector DefaultDC;
+GMAT DefaultDC.ShowProgress = true;
+GMAT DefaultDC.ReportStyle = Normal;
+GMAT DefaultDC.ReportFile = 'DifferentialCorrectorDefaultDC.data';
+GMAT DefaultDC.MaximumIterations = 25;
+GMAT DefaultDC.DerivativeMethod = ForwardDifference;
+GMAT DefaultDC.Algorithm = NewtonRaphson;
+
+%----------------------------------------
+%---------- Subscribers
+%----------------------------------------
+
+Create OrbitView DefaultOrbitView;
+GMAT DefaultOrbitView.SolverIterations = Current;
+GMAT DefaultOrbitView.UpperLeft = [ 0.04013961605584642 0.2901023890784983 ];
+GMAT DefaultOrbitView.Size = [ 0.6919720767888308 0.3805460750853242 ];
+GMAT DefaultOrbitView.RelativeZOrder = 1206;
+GMAT DefaultOrbitView.Maximized = false;
+GMAT DefaultOrbitView.Add = {SatTycho, Earth, Luna};
+GMAT DefaultOrbitView.CoordinateSystem = EarthMJ2000Eq;
+GMAT DefaultOrbitView.DrawObject = [ true true true ];
+GMAT DefaultOrbitView.DataCollectFrequency = 1;
+GMAT DefaultOrbitView.UpdatePlotFrequency = 50;
+GMAT DefaultOrbitView.NumPointsToRedraw = 0;
+GMAT DefaultOrbitView.ShowPlot = true;
+GMAT DefaultOrbitView.MaxPlotPoints = 20000;
+GMAT DefaultOrbitView.ShowLabels = true;
+GMAT DefaultOrbitView.ViewPointReference = Earth;
+GMAT DefaultOrbitView.ViewPointVector = [ -60000 30000 20000 ];
+GMAT DefaultOrbitView.ViewDirection = Earth;
+GMAT DefaultOrbitView.ViewScaleFactor = 1;
+GMAT DefaultOrbitView.ViewUpCoordinateSystem = EarthMJ2000Eq;
+GMAT DefaultOrbitView.ViewUpAxis = Z;
+GMAT DefaultOrbitView.EclipticPlane = On;
+GMAT DefaultOrbitView.XYPlane = Off;
+GMAT DefaultOrbitView.WireFrame = Off;
+GMAT DefaultOrbitView.Axes = Off;
+GMAT DefaultOrbitView.Grid = Off;
+GMAT DefaultOrbitView.SunLine = Off;
+GMAT DefaultOrbitView.UseInitialView = On;
+GMAT DefaultOrbitView.StarCount = 7000;
+GMAT DefaultOrbitView.EnableStars = Off;
+GMAT DefaultOrbitView.EnableConstellations = Off;
+
+Create GroundTrackPlot DefaultGroundTrackPlot;
+GMAT DefaultGroundTrackPlot.SolverIterations = Current;
+GMAT DefaultGroundTrackPlot.UpperLeft = [ 0 0.447098976109215 ];
+GMAT DefaultGroundTrackPlot.Size = [ 0.4991273996509599 0.4488054607508533 ];
+GMAT DefaultGroundTrackPlot.RelativeZOrder = 111;
+GMAT DefaultGroundTrackPlot.Maximized = false;
+GMAT DefaultGroundTrackPlot.Add = {SatTycho};
+GMAT DefaultGroundTrackPlot.DataCollectFrequency = 1;
+GMAT DefaultGroundTrackPlot.UpdatePlotFrequency = 50;
+GMAT DefaultGroundTrackPlot.NumPointsToRedraw = 0;
+GMAT DefaultGroundTrackPlot.ShowPlot = true;
+GMAT DefaultGroundTrackPlot.MaxPlotPoints = 20000;
+GMAT DefaultGroundTrackPlot.CentralBody = Earth;
+GMAT DefaultGroundTrackPlot.TextureMap = 'ModifiedBlueMarble.jpg';
+
+
+%----------------------------------------
+%---------- Mission Sequence
+%----------------------------------------
+
+BeginMissionSequence;
+Propagate Synchronized PropEarth(SatTycho) {SatTycho.ElapsedDays = 9.9};
+Target 'SalirOrbita' DefaultDC {SolveMode = Solve, ExitMode = DiscardAndContinue, ShowProgressWindow = true};
+   Vary 'VarySalirOrbit' DefaultDC(SalirOrbita.Element1 = 0.5, {Perturbation = 0.0001, Lower = -9.9e300, Upper = 9.9e300, MaxStep = 0.2, AdditiveScaleFactor = 0.0, MultiplicativeScaleFactor = 1.0});
+   Maneuver SalirOrbita(SatTycho);
+   Propagate 'ProptoApoapsis' PropEarth(SatTycho) {SatTycho.Earth.Apoapsis};
+   Achieve DefaultDC(SatTycho.Earth.RMAG = 402165, {Tolerance = 0.1});
+EndTarget;  % For targeter DefaultDC
+Target 'EntrarOrbit' DefaultDC {SolveMode = Solve, ExitMode = DiscardAndContinue, ShowProgressWindow = true};
+   Vary 'VaryEntrarOrbit2' DefaultDC(EntrarOrbita.Element1 = 0.5, {Perturbation = 0.0001, Lower = -9.9e300, Upper = 9.9e300, MaxStep = 0.2, AdditiveScaleFactor = 0.0, MultiplicativeScaleFactor = 1.0});
+   Maneuver EntrarOrbita(SatTycho);
+   Propagate PropEarth(SatTycho) {SatTycho.ElapsedSecs = SatTycho.Luna.OrbitPeriod};
+   Achieve DefaultDC(SatTycho.Earth.ECC = 0, {Tolerance = 0.1});
+EndTarget;  % For targeter DefaultDC
